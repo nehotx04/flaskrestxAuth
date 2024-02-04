@@ -12,7 +12,7 @@ class Home(Resource):
     
 
 @usr.route('/users')
-class UsersApi(Resource):
+class UsersListApi(Resource):
     @usr.marshal_list_with(user_model)
     def get(self):
         return User.query.all()
@@ -20,7 +20,7 @@ class UsersApi(Resource):
     @usr.expect(user_post_model)
     @usr.marshal_with(user_model)
     def post(self):
-        hashed_pw = bcrypt.generate_password_hash(usr.payload['password'])
+        hashed_pw = bcrypt.generate_password_hash(usr.payload['password']).decode('utf-8')
         user = User(
             name=usr.payload['name'],
             email=usr.payload['email'],
@@ -30,6 +30,36 @@ class UsersApi(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return 'User created succesfully'
+        return user
     
+@usr.route('/users/<int:id>')
+class UsersApi(Resource):
+    @usr.marshal_list_with(user_model)
+    def get(self, id):
+        user = User.query.get(id)
+        return user
+    
+    @usr.expect(user_post_model)
+    @usr.marshal_with(user_model)
+    def put(self,id):
+        user = User.query.get(id)
+        user.name = usr.payload['name']
+        user.email = usr.payload['email']
+        if usr.payload['password'] == '':
+
+            user.password = user.password
+
+        else:
+            hashed_pw = bcrypt.generate_password_hash(usr.payload['password']).decode('utf-8')
+            user.password = hashed_pw
+
+        db.session.commit()
+
+        return user
+    
+    def delete(self,id):
+        user=User.query.get(id)
+        db.session.delete(user)
+        db.session.commit()
+        return {"message":"user deleted successfully"}
     
