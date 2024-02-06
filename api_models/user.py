@@ -15,3 +15,8 @@ user_model = api.model("User",{
     'password':fields.String
     }
 )
+
+user_auth_model = api.model("User",{
+    'email': fields.String,
+    'password': fields.String,
+})

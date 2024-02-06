@@ -3,15 +3,9 @@ from api_models.user import user_post_model, user_model
 from models.models import User
 from config.conf import db,bcrypt
 
-usr = Namespace("api")
+usr = Namespace("api/users")
 
 @usr.route('/')
-class Home(Resource):
-    def get(self):
-        return {'message':'hello from home route'}
-    
-
-@usr.route('/users')
 class UsersListApi(Resource):
     @usr.marshal_list_with(user_model)
     def get(self):
@@ -32,7 +26,7 @@ class UsersListApi(Resource):
 
         return user
     
-@usr.route('/users/<int:id>')
+@usr.route('/<int:id>')
 class UsersApi(Resource):
     @usr.marshal_list_with(user_model)
     def get(self, id):

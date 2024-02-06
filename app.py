@@ -1,6 +1,7 @@
 from flask import Flask
 from config.conf import api, db, bcrypt
 from routes.users import usr
+from routes.auth import auth
 from models.models import *
 
 
@@ -16,9 +17,10 @@ def create_app():
 
     bcrypt.init_app(app)
     api.init_app(app)
+
     api.add_namespace(usr)
-
-
+    api.add_namespace(auth)
+    
 
     return app
 
