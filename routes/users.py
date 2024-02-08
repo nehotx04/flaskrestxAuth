@@ -2,12 +2,14 @@ from flask_restx import Resource,Namespace
 from api_models.user import user_post_model, user_model
 from models.models import User
 from config.conf import db,bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 usr = Namespace("api/users")
 
 @usr.route('/')
 class UsersListApi(Resource):
     @usr.marshal_list_with(user_model)
+    @jwt_required()
     def get(self):
         return User.query.all()
         
@@ -29,12 +31,14 @@ class UsersListApi(Resource):
 @usr.route('/<int:id>')
 class UsersApi(Resource):
     @usr.marshal_list_with(user_model)
+    @jwt_required()
     def get(self, id):
         user = User.query.get(id)
         return user
     
     @usr.expect(user_post_model)
     @usr.marshal_with(user_model)
+    @jwt_required()
     def put(self,id):
         user = User.query.get(id)
         user.name = usr.payload['name']
@@ -51,6 +55,7 @@ class UsersApi(Resource):
 
         return user
     
+    @jwt_required()
     def delete(self,id):
         user=User.query.get(id)
         db.session.delete(user)
