@@ -1,4 +1,4 @@
-from flask_restx import Resource,Namespace
+from flask_restx import Resource,Namespace, marshal
 from api_models.user import user_post_model, user_model, user_all_model
 from models.models import User
 from config.conf import db,bcrypt
@@ -30,14 +30,12 @@ class UsersListApi(Resource):
     
 @usr.route('/<int:id>')
 class UsersApi(Resource):
-    @usr.marshal_list_with(user_model)
     @jwt_required()
     def get(self, id):
         user = User.query.get(id)
-        return user
+        return marshal(user,user_model)
     
     @usr.expect(user_post_model)
-    @usr.marshal_with(user_model)
     @jwt_required()
     def put(self,id):
         auth_user = get_jwt_identity()
@@ -55,7 +53,7 @@ class UsersApi(Resource):
 
             db.session.commit()
 
-            return user
+            return marshal(user,user_model),200
         
         else:
             return {"message":"Unauthorized"},401
