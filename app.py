@@ -2,6 +2,7 @@ from flask import Flask
 from config.conf import api, db, bcrypt
 from routes.users import usr
 from routes.auth import auth
+from routes.tasks import task
 from models.models import *
 from flask_jwt_extended import JWTManager
 from os import environ
@@ -23,6 +24,7 @@ def create_app():
 
     api.add_namespace(usr)
     api.add_namespace(auth)
+    api.add_namespace(task)
     
 
     return app

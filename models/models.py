@@ -13,6 +13,6 @@ class Task(db.Model):
     id = db.Column(db.Integer , primary_key=True,autoincrement=True)
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    completed = db.Column(db.Boolean,nullable=False,default=True)
+    completed = db.Column(db.Boolean,nullable=True,default=False)
     user_id = db.Column(db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='tasks')
